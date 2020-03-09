@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./static/theme.css?v1">
+    <link rel="stylesheet" href="./static/misc.css?v1">
+    <title>Grade Calculator</title>
+</head>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="./static/index.js?v1"></script>
+
+<body>
+  <div id="app">
+    <div style="text-align: center; margin-top: 2vh">
+      <h1 class="display-3" style="font-size: 30px">Synergy Grade Calculator</h1>
+      <h5>Built for Synergy</h3>
+      <h5>Created by Alvin Zheng</h4>
+    </div>
+    <hr style="margin-top:3vh">
+    <div v-cloak v-if="viewLogin">
+      <div style="text-align: center; margin-top: 5vh">
+        <form id="loginform">
+          <fieldset>
+            <legend>Retrieve Data</legend>
+            <div class="form-group">
+              <label class="col-form-label" for="inputDefault">ID</label>
+              <input ref="username" type="text" style="width: 18%; margin-left: auto; margin-right: auto;" class="form-control" placeholder="Enter ID" id="inputDefault">
+              <small id="emailHelp" class="form-text text-muted">We'll never collect your information.</small>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password</label>
+              <input ref="password" type="password" style="width: 18%; margin-left: auto; margin-right: auto;" class="form-control" id="exampleInputPassword1" placeholder="Password">
+            </div>
+          </fieldset>
+        </form>
+        <button v-on:click="retrieve()" class="btn btn-primary">Retrieve Data</button><br>
+        <transition name="fade">
+          <div class="lds-roller" v-if="seen" style="margin-top: 3vh"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <p v-if="seen">This can take up to 1-2 minutes depending on internet speed</p>
+        </transition>
+        <transition name="fade" style="margin-top: 1vh">
+          <div v-if="seen" id="countdown">120</div>
+        </transition>
+        <transition name="fade">
+          <p v-if="seen">This can take up to 1-2 minutes depending on internet speed</p>
+        </transition>
+        <h3 style="font-size: 20px; margin-top: 5vh; text-align: center; color: red">${ status }$</h3>
+
+        <input id="load_file" type="file" style="margin-top: 20vh; margin-left: 4vw" /><br>
+        <button v-on:click="load_data()" class="btn btn-primary" style="margin-top: 3vh">Load Data</button><br>
+      </div>
+    </div>
+
+    <div v-cloak v-if="viewData">
+      <div style="text-align: center; margin-top: 5vh">
+        <li v-for="value in grades" style="list-style-type: none; margin-top: 4vh">
+          <h2>${ value[0] }$</h2>
+          <button v-on:click="viewGrades(value, true)" class="btn btn-primary" style="margin-top: 1vh">Select</button>
+        </li>
+        <button v-on:click="save_data()" class="btn btn-primary" style="margin-top: 15vh">Download Retrieved Data</button>
+      </div>
+    </div>
+
+    <div v-cloak v-if="viewCalc">
+      <div style="text-align: center; margin-top: 1vh">
+        <button v-on:click="dataPanel()" class="btn btn-primary" style="margin-top: 1vh">Back</button><br>
+        <button v-on:click="addAssignment()" class="btn btn-primary" style="margin-top: 1vh">Add</button>
+        <button v-on:click="removeAssignment()" class="btn btn-primary" style="margin-top: 1vh">Remove</button><br>
+        <div style="margin-top: 1vh">
+          Assingment Name: <input type="text" id="assignName"> Score: <input type="number" id="grade1"> / <input type="number" id="grade2"> Category: <input type="text" id="categor"><br>
+        </div>
+        <h3 id="calcStatus" style="margin-top: 1vh"></h3>
+        <h1 id="className" style="margin-top: 1vh"></h1>
+        <h2>${ finalGrade }$%</h2>
+        <table class="table table-in" id="assignments" style="margin-top: 1.5vh; width: 70%" align="center">
+          <thead>
+            <tr class="table-type">
+              <th scope="col">Assignment Name</th>
+              <th scope="col">Score</th>
+              <th scope="col">Category</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>
